@@ -139,17 +139,26 @@ router.post('/', async (req, res, next) => {
  */
 router.delete('/:id', async (req, res, next) => {
     try {
+
+        const tree = await Tree.findByPk(req.params.id)
+        console.log(tree)
+        await tree.destroy();
         res.json({
             status: "success",
             message: `Successfully removed tree ${req.params.id}`,
         });
+
     } catch(err) {
+
         next({
             status: "error",
             message: `Could not remove tree ${req.params.id}`,
             details: err.errors ? err.errors.map(item => item.message).join(', ') : err.message
         });
-    }
+
+
+
+}
 });
 
 /**
@@ -188,7 +197,35 @@ router.delete('/:id', async (req, res, next) => {
  */
 router.put('/:id', async (req, res, next) => {
     try {
-        // Your code here
+        const tree = await Tree.findByPk(req.params.id);
+
+
+        if(req.body.id !== undefined) {
+            tree.id = req.body.id
+        }
+        if(req.body.name !== undefined) {
+            tree.tree = req.body.name
+        }
+        if(req.body.location !== undefined) {
+            tree.location = req.body.location
+        }
+        if(req.body.height !== undefined) {
+            tree.heightFt = req.body.height
+        }
+        if(req.body.size !== undefined) {
+            tree.groundCircumferenceFt = req.body.size
+        }
+        await tree.save()
+
+        res.json({
+            message: `Tree with id of ${req.params.id} has been updated`,
+            tree
+        })
+
+
+
+
+
     } catch(err) {
         next({
             status: "error",
