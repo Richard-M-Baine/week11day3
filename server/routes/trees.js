@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 require('dotenv').config();
-const {Tree} = require('../db/models/index.js')
+const {Tree} = require('../db/models')
 const { Op } = require("sequelize");
 
 /**
@@ -95,9 +95,18 @@ router.get('/:id', async (req, res, next) => {
  */
 router.post('/', async (req, res, next) => {
     try {
+        const {name, location, height, size} = req.body
+        const tree = await Tree.create({
+            tree: name,
+            location,
+            heightFt: height,
+            groundCircumferenceFt: size
+
+        })
         res.json({
             status: "success",
             message: "Successfully created new tree",
+            data: tree
         });
     } catch(err) {
         next({
