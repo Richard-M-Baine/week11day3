@@ -2,10 +2,17 @@
 const express = require('express');
 const router = express.Router();
 
+
+
+require('dotenv').config();
+const {Tree} = require('../db/models/index.js')
+const { Op } = require("sequelize");
+
 /**
  * BASIC PHASE 1, Step A - Import model
  */
 // Your code here
+
 
 /**
  * INTERMEDIATE BONUS PHASE 1 (OPTIONAL), Step A:
@@ -24,9 +31,13 @@ const router = express.Router();
  *   - Ordered by the heightFt from tallest to shortest
  */
 router.get('/', async (req, res, next) => {
-    let trees = [];
+    const trees = await Tree.findAll({
+        attributes: ['heightFt', 'tree','id'],
+        order:[['heightFt','DESC']]
+    });
 
-    // Your code here
+
+
 
     res.json(trees);
 });
@@ -44,7 +55,9 @@ router.get('/:id', async (req, res, next) => {
     let tree;
 
     try {
-        // Your code here
+        let treeid = req.params.id
+
+        tree = await Tree.findByPk(treeid)
 
         if (tree) {
             res.json(tree);
